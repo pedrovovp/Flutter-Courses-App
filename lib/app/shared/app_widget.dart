@@ -1,8 +1,11 @@
+import 'package:app/app/pages/home/home_module.dart';
+import 'package:app/app/pages/home/home_page.dart';
 import 'package:app/app/pages/login/login_module.dart';
 import 'package:flutter/material.dart';
 
 class AppWidget extends StatelessWidget {
   
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,6 +14,9 @@ class AppWidget extends StatelessWidget {
         primarySwatch: Colors.lightBlue,
       ),
       home: LoginModule(),
+      routes: {
+        "/home" : (_) => HomeModule()
+      },
     );
   }
 }

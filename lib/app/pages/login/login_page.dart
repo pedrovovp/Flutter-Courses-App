@@ -1,14 +1,10 @@
 import 'dart:convert';
-
 import 'package:app/app/pages/home/home_module.dart';
-import 'package:app/app/pages/register/register_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:app/app/shared/app_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../login_json.dart';
 
-RegisterBloc regBloc = RegisterBloc();
 AppBloc appBloc = AppBloc();
 TextEditingController emailCtrl = TextEditingController(text: '');
 TextEditingController passCtrl = TextEditingController(text: '');
@@ -20,6 +16,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,7 +95,6 @@ class BuildInput extends StatelessWidget {
 
 class BuildButtons extends StatefulWidget {
 
-  RegisterBloc regBloc = RegisterBloc();
   var users = new List<userList>();
   @override
   _BuildButtonsState createState() => _BuildButtonsState();
@@ -108,26 +104,23 @@ class _BuildButtonsState extends State<BuildButtons> {
 
 
   changePage(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomeModule()));
+   Navigator.pushReplacementNamed(
+        context, "/home");
   }
 
   save() async {
-    SharedPreferences.setMockInitialValues({}); // set initial values here if desired
     var prefs = await SharedPreferences.getInstance();
     await prefs.setString('data', jsonEncode(widget.users));
   }
 
   Future load() async{
     var prefs = await SharedPreferences.getInstance();
-    var data = prefs.getString('data');
-    if(data==null)    print("2");
+    var data = prefs.getString('data');    
 
     if (data != null) {
-        print("1");
       Iterable decode = jsonDecode(data);
       List <userList> result = decode.map((x) => userList.fromJson(x)).toList();
-      if(result.contains(emailCtrl.text))
+        widget.users = result;        
     }
   }
 
@@ -139,15 +132,24 @@ class _BuildButtonsState extends State<BuildButtons> {
         password: passCtrl.text,
       ),
     );
-
-    save();
     emailCtrl.clear();
     passCtrl.clear();
+    save();
     appBloc.changeLogin(1);
   }
 
-  loadUser() {
-    load();
+  loadUser() async {
+    await load();
+    for(int i = 0; i < widget.users.length; i++)
+    {
+      final item = widget.users[i];
+      if(item.email == "${emailCtrl.text}" && item.password == "${passCtrl.text}")
+      {
+        changePage(context);
+        break; 
+      }
+    }
+    
   }
 
   @override
@@ -177,6 +179,8 @@ class _BuildButtonsState extends State<BuildButtons> {
                     child: Text('Não possui uma conta ? Clique para cadastrar'),
                     onPressed: () {
                       appBloc.changeLogin(snapshot.data);
+                      emailCtrl.clear();
+                      passCtrl.clear();
                     },
                   )
                 ],
