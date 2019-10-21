@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:app/app/pages/home/home_module.dart';
 import 'package:flutter/material.dart';
 import 'package:app/app/shared/app_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,6 +144,7 @@ class _BuildButtonsState extends State<BuildButtons> {
       final item = widget.users[i];
       if(item.email == "${emailCtrl.text}" && item.password == "${passCtrl.text}")
       {
+        emailSaved = emailCtrl.text;
         changePage(context);
         break; 
       }
