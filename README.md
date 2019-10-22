@@ -1,6 +1,6 @@
 # app
 
-A new Flutter project.
+Aplication to display courses.
 
 ## Getting Started
 
