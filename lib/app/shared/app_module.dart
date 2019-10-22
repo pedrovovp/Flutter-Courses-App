@@ -1,5 +1,5 @@
-import 'package:app/app/home/repositories/post_repository.dart';
 import 'package:app/app/pages/login/login_bloc.dart';
+import 'package:app/app/repositories/home_repository.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:app/app/shared/app_widget.dart';
@@ -14,7 +14,7 @@ class AppModule extends ModuleWidget {
 
   @override
   List<Dependency> get dependencies => [
-        Dependency((i) => PostRepository()),
+        Dependency((i) => ProductRepository()),
       ];
 
   @override

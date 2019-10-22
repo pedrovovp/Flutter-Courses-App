@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:app/app/pages/login/login_page.dart';
 import 'package:app/app/shared/validator.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:rxdart/rxdart.dart';
@@ -30,8 +29,6 @@ class AppBloc extends Object with Validators implements BlocBase {
 
   @override
   void dispose() {
-    _emailController?.close();
-    _passwordController?.close();
   }
 
   @override

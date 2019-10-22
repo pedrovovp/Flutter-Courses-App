@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:app/app/pages/home/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:app/app/shared/app_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../login_json.dart';
+import '../login/login_json.dart';
 
 AppBloc appBloc = AppBloc();
 TextEditingController emailCtrl = TextEditingController(text: '');
@@ -145,6 +146,8 @@ class _BuildButtonsState extends State<BuildButtons> {
       if(item.email == "${emailCtrl.text}" && item.password == "${passCtrl.text}")
       {
         emailSaved = emailCtrl.text;
+        emailCtrl.clear();
+        passCtrl.clear();
         changePage(context);
         break; 
       }
@@ -205,6 +208,8 @@ class _BuildButtonsState extends State<BuildButtons> {
                   FlatButton(
                     child: Text('Clique para fazer login'),
                     onPressed: () {
+                      emailCtrl.clear();
+                      passCtrl.clear();
                       appBloc.changeLogin(snapshot.data);
                     },
                   )
