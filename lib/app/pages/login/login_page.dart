@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:app/app/pages/home/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:app/app/shared/app_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,7 +7,9 @@ import '../login/login_json.dart';
 AppBloc appBloc = AppBloc();
 TextEditingController emailCtrl = TextEditingController(text: '');
 TextEditingController passCtrl = TextEditingController(text: '');
-String emailSaved, passSaved;
+TextEditingController nameCtrl = TextEditingController(text: '');
+
+String emailSaved, passSaved, nameSaved;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -37,7 +38,6 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          BuildInput(),
           BuildButtons(),
         ],
       ),
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-class BuildInput extends StatelessWidget {
+class BuildInputLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,10 +92,67 @@ class BuildInput extends StatelessWidget {
   }
 }
 
+class BuildInputRegister extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: TextField(
+              keyboardType: TextInputType.text,
+              controller: nameCtrl,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Nome',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: StreamBuilder<String>(
+                stream: appBloc.email,
+                builder: (context, snapshot) {
+                  return TextField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: emailCtrl,
+                    onChanged: appBloc.emailInput,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                      errorText: snapshot.error,
+                    ),
+                  );
+                }),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: StreamBuilder<String>(
+                stream: appBloc.password,
+                builder: (context, snapshot) {
+                  return TextField(
+                    keyboardType: TextInputType.text,
+                    onChanged: appBloc.passwordInput,
+                    controller: passCtrl,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Senha',
+                      errorText: snapshot.error,
+                    ),
+                  );
+                }),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class BuildButtons extends StatefulWidget {
 
-  var users = new List<userList>();
+  var users = new List<UserList>();
   @override
   _BuildButtonsState createState() => _BuildButtonsState();
 }
@@ -119,7 +176,7 @@ class _BuildButtonsState extends State<BuildButtons> {
 
     if (data != null) {
       Iterable decode = jsonDecode(data);
-      List <userList> result = decode.map((x) => userList.fromJson(x)).toList();
+      List <UserList> result = decode.map((x) => UserList.fromJson(x)).toList();
         widget.users = result;        
     }
   }
@@ -127,11 +184,13 @@ class _BuildButtonsState extends State<BuildButtons> {
   saveUser() {
     
     widget.users.add(
-      userList(
+      UserList(
+        name: nameCtrl.text,
         email: emailCtrl.text,
         password: passCtrl.text,
       ),
     );
+    nameCtrl.clear();
     emailCtrl.clear();
     passCtrl.clear();
     save();
@@ -146,6 +205,7 @@ class _BuildButtonsState extends State<BuildButtons> {
       if(item.email == "${emailCtrl.text}" && item.password == "${passCtrl.text}")
       {
         emailSaved = emailCtrl.text;
+        nameSaved = item.name;
         emailCtrl.clear();
         passCtrl.clear();
         changePage(context);
@@ -165,6 +225,7 @@ class _BuildButtonsState extends State<BuildButtons> {
             if (snapshot.data == 0) { // Login
               return Column(
                 children: <Widget>[
+                  BuildInputLogin(),
                   StreamBuilder<bool>(
                       stream: appBloc.submitCheck,
                       builder: (context, snapshot) {
@@ -192,6 +253,7 @@ class _BuildButtonsState extends State<BuildButtons> {
             {
               return Column(
                 children: <Widget>[
+                  BuildInputRegister(),
                   StreamBuilder<bool>(
                       stream: appBloc.submitCheck,
                       builder: (context, snapshot) {
@@ -208,6 +270,7 @@ class _BuildButtonsState extends State<BuildButtons> {
                   FlatButton(
                     child: Text('Clique para fazer login'),
                     onPressed: () {
+                      nameCtrl.clear();
                       emailCtrl.clear();
                       passCtrl.clear();
                       appBloc.changeLogin(snapshot.data);

@@ -1,16 +1,19 @@
-class userList {
+class UserList {
+  String name;
   String email;
   String password;
 
-  userList({this.email, this.password});
+  UserList({this.name, this.email, this.password});
 
-  userList.fromJson(Map<String, dynamic> json) {
+  UserList.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
     email = json['email'];
     password = json['password'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
     data['email'] = this.email;
     data['password'] = this.password;
     return data;

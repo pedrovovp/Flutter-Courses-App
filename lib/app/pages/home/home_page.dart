@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text("Pedro Vinícius"),
+              accountName: Text(nameSaved),
               accountEmail: Text(emailSaved),
               onDetailsPressed: () => homeBloc.changeDetails(),
               currentAccountPicture: CircleAvatar(
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
                         ? Colors.blue
                         : Colors.white,
                 child: Text(
-                  "P",
+                  nameSaved[0],
                   style: TextStyle(fontSize: 40),
                 ),
               ),
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       appBar: AppBar(
-        title: Text("Home"),
+        title: Text("Cursos"),
       ),
       body: FutureBuilder(
         future: _repository.getProducts(),
@@ -126,13 +126,17 @@ class ShowUserDetails extends StatelessWidget {
       child: Column(
         children: <Widget>[
           ListTile(
+              title: Text("Minha Conta"),
+              trailing: Icon(Icons.edit),
+            ),
+          ListTile(
               title: Text("Sair da Conta"),
               onTap: () {
-                homeBloc.dispose();
+                homeBloc.changeDetails();
                 Navigator.pushReplacementNamed(context, "/login");
               },
               trailing: Icon(Icons.exit_to_app),
-            ),
+            ),   
         ],
       ),
     );
